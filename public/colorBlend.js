@@ -60,8 +60,6 @@ function show(canvas){
          
         void main()
         {
-            // Normalized pixel coordinates (from 0 to 1)
-            // vec2 uv = fragCoord/iResolution.xy;
             vec2 uv = v_uv;
             uv -= 0.5;
             uv.x *= u_iResolution.x / u_iResolution.y;
