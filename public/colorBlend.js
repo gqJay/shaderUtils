@@ -6,11 +6,10 @@ function show(canvas){
 
     var vertStr = `
         attribute vec4 a_position;
-        attribute vec2 a_uv;
-        varying vec2 v_uv;
+        varying vec2 v_pos;
 
         void main(){
-            v_uv = a_uv;
+            v_pos = a_position.xy;
             gl_Position = a_position;
         }
     `;
@@ -42,12 +41,11 @@ function show(canvas){
      
         uniform float u_rThree;
         uniform float u_blurThree;
-        uniform vec3 u_colorThree;
-        //Last three vec2 doesn't be used.The reason is to use a only unique function getFactor;
+        uniform vec3 u_colorThree
         uniform vec2 u_threePs[33];
         uniform vec2 u_tarPosThree;
 
-        varying vec2 v_uv;
+        varying vec2 v_pos;
     
         float blurCircle(vec2 uv, vec2 tarPos, float r, float blur){
             float dis = length(uv - tarPos);
@@ -60,14 +58,14 @@ function show(canvas){
          
         void main()
         {
-            vec2 uv = v_uv;
-            uv -= 0.5;
-            uv.x *= u_iResolution.x / u_iResolution.y;
+            vec2 pos = v_pos;
+            pos *= 0.5;
+            pos.x *= u_iResolution.x / u_iResolution.y;
         
         
-            float factorOne = getFactor(uv, u_tarPosOne, u_rOne, u_blurOne);
-            float factorTwo = getFactor(uv, u_tarPosTwo, u_rTwo, u_blurTwo);
-            float factorThree = getFactor(uv, u_tarPosThree, u_rThree, u_blurThree);
+            float factorOne = getFactor(pos, u_tarPosOne, u_rOne, u_blurOne);
+            float factorTwo = getFactor(pos, u_tarPosTwo, u_rTwo, u_blurTwo);
+            float factorThree = getFactor(pos, u_tarPosThree, u_rThree, u_blurThree);
     
             float factorSame = factorTwo * (1.0 - factorThree) + factorThree;
             float factorAll = factorOne * (1.0 - factorSame) + factorSame;
@@ -91,19 +89,6 @@ function show(canvas){
         -1, -1
     ];
     gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(pos), gl.STATIC_DRAW);
-
-    var uvsAttributeLocation = gl.getAttribLocation(program, "a_uv");
-    var uvsBuffer = gl.createBuffer();
-    gl.bindBuffer(gl.ARRAY_BUFFER, uvsBuffer);
-    var uvs = [
-        0, 0,
-        1, 1,
-        1, 0,
-        1, 1,
-        0, 1,
-        0, 0
-    ];
-    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(uvs), gl.STATIC_DRAW);
 
     var onePs = [
         [-0.2, 0.1], [0.05, 0.12], [0.3, 0.14],
@@ -205,15 +190,6 @@ function show(canvas){
         var stride = 0;
         var offset = 0;
         gl.vertexAttribPointer(posAttributeLocation, size, type, normalize, stride, offset);
-    
-        gl.enableVertexAttribArray(uvsAttributeLocation);
-        gl.bindBuffer(gl.ARRAY_BUFFER, uvsBuffer);
-        size = 2;
-        type = gl.FLOAT;
-        normalize = false;
-        stride = 0;
-        offset = 0;
-        gl.vertexAttribPointer(uvsAttributeLocation, size, type, normalize, stride, offset);
     
         gl.uniform2f(iResolutionLoc, gl.canvas.width, gl.canvas.height);
 
