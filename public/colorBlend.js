@@ -26,23 +26,20 @@ function show(canvas){
         precision mediump float;
 
         uniform vec2 u_iResolution;
+
         uniform float u_rOne;
         uniform float u_blurOne;
         uniform vec3 u_colorOne;
-        uniform vec2 u_onePs[33];
         uniform vec2 u_tarPosOne;
     
         uniform float u_rTwo;
         uniform float u_blurTwo;
         uniform vec3 u_colorTwo;
-        //Last three vec2 doesn't be used.The reason is to use a only unique function getFactor;
-        uniform vec2 u_twoPs[33];
         uniform vec2 u_tarPosTwo;
      
         uniform float u_rThree;
         uniform float u_blurThree;
-        uniform vec3 u_colorThree
-        uniform vec2 u_threePs[33];
+        uniform vec3 u_colorThree;
         uniform vec2 u_tarPosThree;
 
         varying vec2 v_pos;
@@ -90,6 +87,7 @@ function show(canvas){
     ];
     gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(pos), gl.STATIC_DRAW);
 
+    //Last three vec2 doesn't be used.The reason is to use a only unique function getFactor;
     var onePs = [
         [-0.2, 0.1], [0.05, 0.12], [0.3, 0.14],
         [0.3, 0.14], [0.35, 0.02], [0.2, -0.1],
