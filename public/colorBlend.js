@@ -72,6 +72,7 @@ function show(canvas){
     var vertShader = compileShader(gl, vertStr, gl.VERTEX_SHADER);
     var fragShader = compileShader(gl, fragStr, gl.FRAGMENT_SHADER);
     var program = createProgram(gl, vertShader, fragShader);
+    gl.useProgram(program);
 
     //init attribute data
     var posAttributeLocation = gl.getAttribLocation(program, "a_position");
@@ -86,6 +87,13 @@ function show(canvas){
         -1, -1
     ];
     gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(pos), gl.STATIC_DRAW);
+    gl.enableVertexAttribArray(posAttributeLocation);
+    var size = 2;
+    var type = gl.FLOAT;
+    var normalize = false;
+    var stride = 0;
+    var offset = 0;
+    gl.vertexAttribPointer(posAttributeLocation, size, type, normalize, stride, offset);
 
     //Last three vec2 doesn't be used.The reason is to use a only unique function getFactor;
     var onePs = [
@@ -154,6 +162,20 @@ function show(canvas){
     var colorThreeLoc = gl.getUniformLocation(program, "u_colorThree");
     var tarPosThreeLoc = gl.getUniformLocation(program, "u_tarPosThree");
 
+    gl.uniform1f(rOneUniLoc, 0.6);
+    gl.uniform1f(blurOneUniLoc, 0.6);
+    gl.uniform3f(colorOneLoc, 0.0, 0.9, 1.0);
+
+
+    gl.uniform1f(rTwoUniLoc, 0.5);
+    gl.uniform1f(blurTwoUniLoc, 0.5);
+    gl.uniform3f(colorTwoLoc, 0.77, 0.19, 1.0);
+
+
+    gl.uniform1f(rThreeUniLoc, 0.4);
+    gl.uniform1f(blurThreeUniLoc, 0.4);
+    gl.uniform3f(colorThreeLoc, 0.77, 0.19, 1.0);
+
     var lastTime = new Date().getTime();
     var totalTime = 0;
     draw();
@@ -178,34 +200,13 @@ function show(canvas){
         gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
         gl.clearColor(0, 0, 0, 0);
         gl.clear(gl.COLOR_BUFFER_BIT);
-        gl.useProgram(program);
-    
-        gl.enableVertexAttribArray(posAttributeLocation);
-        gl.bindBuffer(gl.ARRAY_BUFFER, posBuffer);
-        var size = 2;
-        var type = gl.FLOAT;
-        var normalize = false;
-        var stride = 0;
-        var offset = 0;
-        gl.vertexAttribPointer(posAttributeLocation, size, type, normalize, stride, offset);
     
         gl.uniform2f(iResolutionLoc, gl.canvas.width, gl.canvas.height);
 
-        gl.uniform1f(rOneUniLoc, 0.6);
-        gl.uniform1f(blurOneUniLoc, 0.6);
-        gl.uniform3f(colorOneLoc, 0.0, 0.9, 1.0);
         var tarPosOne = getPos(onePs, stepOne, onceMoveTimeOne, totalTime);
         gl.uniform2f(tarPosOneLoc, tarPosOne[0], tarPosOne[1]);
-    
-        gl.uniform1f(rTwoUniLoc, 0.5);
-        gl.uniform1f(blurTwoUniLoc, 0.5);
-        gl.uniform3f(colorTwoLoc, 0.77, 0.19, 1.0);
         var tarPosTwo = getPos(twoPs, stepTwo, onceMoveTimeTwo, totalTime);
         gl.uniform2f(tarPosTwoLoc, tarPosTwo[0], tarPosTwo[1]);
-    
-        gl.uniform1f(rThreeUniLoc, 0.4);
-        gl.uniform1f(blurThreeUniLoc, 0.4);
-        gl.uniform3f(colorThreeLoc, 0.77, 0.19, 1.0);
         var tarPosThree = getPos(threePs, stepThree, onceMoveTimeThree, totalTime);
         gl.uniform2f(tarPosThreeLoc, tarPosThree[0], tarPosThree[1]);
     
